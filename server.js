@@ -58,7 +58,28 @@ app.get('/api/incoming-adoptions/:year', async (req, res) => {
        ORDER BY ia.total_adoptions DESC`,
       [year]
     );
-    res.json(result.rows);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No data found for the specified year' });
+    }
+
+    const formattedResponse = {
+      year: year,
+      data: result.rows.map((row) => ({
+        country: row.country_name,
+        adoptions_finalized_abroad: row.adoptions_finalized_abroad,
+        adoptions_to_be_finalized_in_us: row.adoptions_to_be_finalized_in_us,
+        total_adoptions: row.total_adoptions,
+      })),
+      total_adoptions: result.rows.reduce(
+        (sum, row) => sum + row.total_adoptions,
+        0
+      ),
+    };
+
+    res.json(formattedResponse);
   } catch (err) {
     console.error(err);
     res
@@ -73,7 +94,7 @@ app.get('/api/outgoing-adoptions/:year', async (req, res) => {
   try {
     const { year } = req.params;
     const result = await pool.query(
-      `SELECT oa.receiving_country, s. state_name, oa.number_of_cases
+      `SELECT oa.receiving_country, s.state_name, oa.number_of_cases
        FROM outgoing_adoptions oa
        JOIN states s ON oa.state_id = s.state_id
        JOIN years y ON oa.year_id = y.year_id
@@ -81,7 +102,39 @@ app.get('/api/outgoing-adoptions/:year', async (req, res) => {
        ORDER BY oa.number_of_cases DESC`,
       [year]
     );
-    res.json(result.rows);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No data found for the specified year' });
+    }
+
+    // Group the results by receiving country
+    const groupedResults = result.rows.reduce((acc, row) => {
+      if (!acc[row.receiving_country]) {
+        acc[row.receiving_country] = [];
+      }
+      acc[row.receiving_country].push({
+        state: row.state_name,
+        cases: row.number_of_cases,
+      });
+      return acc;
+    }, {});
+
+    const formattedResponse = {
+      year: year,
+      data: Object.entries(groupedResults).map(([country, states]) => ({
+        receiving_country: country,
+        states: states,
+        total_cases: states.reduce((sum, state) => sum + state.cases, 0),
+      })),
+      total_cases: result.rows.reduce(
+        (sum, row) => sum + row.number_of_cases,
+        0
+      ),
+    };
+
+    res.json(formattedResponse);
   } catch (err) {
     console.error(err);
     res

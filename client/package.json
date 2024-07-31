@@ -14,6 +14,7 @@
     "@mantine/core": "^7.11.2",
     "@mantine/hooks": "^7.11.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "@tabler/icons-react": "^3.11.0",
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -24,7 +25,8 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.25.1",
     "recharts": "^2.12.7",
-    "tailwind-merge": "^2.4.0"
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -36,6 +38,8 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.40",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "tailwindcss": "^3.4.7",
     "vite": "^5.3.4"
   }

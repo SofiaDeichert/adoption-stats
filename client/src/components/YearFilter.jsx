@@ -1,5 +1,3 @@
-import React from 'react';
-
 const YearFilter = ({ years, selectedYear, onYearChange }) => {
   return (
     <div className="mb-4">

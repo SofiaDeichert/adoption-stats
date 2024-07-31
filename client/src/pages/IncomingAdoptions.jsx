@@ -38,15 +38,15 @@ const IncomingAdoptions = () => {
       />
       <Map data={data} year={selectedYear} />
       <div className="mt-8">
-        <DataTable data={data} columns={columns} />
+        {/* <DataTable data={data} columns={columns} /> */}
       </div>
       <div className="mt-8">
-        <Chart
+        {/* <Chart
           data={data.slice(0, 10)}
           xKey="country"
           yKey="total_adoptions"
           title="Top 10 Countries by Total Adoptions"
-        />
+        /> */}
       </div>
     </div>
   );

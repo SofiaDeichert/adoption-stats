@@ -1,47 +1,108 @@
 import { Link } from 'react-router-dom';
+import {
+  Container,
+  Title,
+  Text,
+  SimpleGrid,
+  Card,
+  Image,
+  Button,
+  Group,
+} from '@mantine/core';
 
 const Home = () => {
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6">
+    <Container size="xl">
+      <Title order={1} align="center" mt="xl" mb="md">
         Welcome to the Adoption Statistics Dashboard
-      </h2>
-      <p className="mb-4">
-        This dashboard provides comprehensive statistics on intercountry
-        adoptions. Explore the data through various visualizations and tables.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Link
-          to="/incoming"
-          className="bg-blue-100 p-4 rounded-lg shadow hover:shadow-md transition-shadow"
-        >
-          <h3 className="text-xl font-semibold mb-2">Incoming Adoptions</h3>
-          <p>
+      </Title>
+      <Text align="center" size="lg" mb="xl" pt={15}>
+        This dashboard provides comprehensive statistics on United States
+        intercountry adoptions. Explore the data through various visualizations
+        and tables.
+      </Text>
+
+      <SimpleGrid
+        cols={3}
+        spacing="lg"
+        breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
+        pt={100}
+      >
+        <Card shadow="sm" p="lg" radius="md" withBorder>
+          <Card.Section></Card.Section>
+
+          <Group position="apart" mt="md" mb="xs">
+            <Text weight={500}>Incoming Adoptions by Country of Origin</Text>
+          </Group>
+
+          <Text size="sm" c="dimmed">
             Explore statistics on adoptions to the United States from other
             countries.
-          </p>
-        </Link>
-        <Link
-          to="/outgoing"
-          className="bg-green-100 p-4 rounded-lg shadow hover:shadow-md transition-shadow"
-        >
-          <h3 className="text-xl font-semibold mb-2">Outgoing Adoptions</h3>
-          <p>
-            View data on adoptions from the United States to other countries.
-          </p>
-        </Link>
-        <Link
-          to="/by-state"
-          className="bg-yellow-100 p-4 rounded-lg shadow hover:shadow-md transition-shadow"
-        >
-          <h3 className="text-xl font-semibold mb-2">Adoptions by State</h3>
-          <p>
+          </Text>
+
+          <Button
+            variant="light"
+            color="blue"
+            fullWidth
+            mt="md"
+            radius="md"
+            component={Link}
+            to="/incoming"
+          >
+            View Details
+          </Button>
+        </Card>
+
+        <Card shadow="sm" p="lg" radius="md" withBorder>
+          <Card.Section></Card.Section>
+
+          <Group position="apart" mt="md" mb="xs">
+            <Text weight={500}>Incoming Adoptions by State</Text>
+          </Group>
+
+          <Text size="sm" c="dimmed">
             Analyze adoption statistics for different states within the United
             States.
-          </p>
-        </Link>
-      </div>
-    </div>
+          </Text>
+
+          <Button
+            variant="light"
+            color="blue"
+            fullWidth
+            mt="md"
+            radius="md"
+            component={Link}
+            to="/by-state"
+          >
+            View Details
+          </Button>
+        </Card>
+
+        <Card shadow="sm" p="lg" radius="md" withBorder>
+          <Card.Section></Card.Section>
+
+          <Group position="apart" mt="md" mb="xs">
+            <Text weight={500}>Outgoing Adoptions</Text>
+          </Group>
+
+          <Text size="sm" c="dimmed">
+            View data on adoptions from the United States to other countries.
+          </Text>
+
+          <Button
+            variant="light"
+            color="blue"
+            fullWidth
+            mt="md"
+            radius="md"
+            component={Link}
+            to="/outgoing"
+          >
+            View Details
+          </Button>
+        </Card>
+      </SimpleGrid>
+    </Container>
   );
 };
 

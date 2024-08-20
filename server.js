@@ -29,13 +29,51 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Intercountry Adoption Statistics API' });
 });
 
+// Get all years
+app.get('/api/years', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT year FROM years ORDER BY year DESC'
+    );
+    const formattedResponse = {
+      year: 'all',
+      data: result.rows.map((row) => row.year),
+    };
+    res.json(formattedResponse);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while fetching years' });
+  }
+});
+
+// Get all states
+app.get('/api/states', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT state_name FROM states ORDER BY state_name'
+    );
+    const formattedResponse = {
+      year: 'all',
+      data: result.rows.map((row) => row.state_name),
+    };
+    res.json(formattedResponse);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while fetching states' });
+  }
+});
+
 // Get all countries of origin
 app.get('/api/countries', async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM countries ORDER BY country_name'
+      'SELECT country_name FROM countries ORDER BY country_name'
     );
-    res.json(result.rows);
+    const formattedResponse = {
+      year: 'all',
+      data: result.rows.map((row) => row.country_name),
+    };
+    res.json(formattedResponse);
   } catch (err) {
     console.error(err);
     res
@@ -46,18 +84,38 @@ app.get('/api/countries', async (req, res) => {
 
 // Get incoming adoptions by country of origin by year
 // Table 1 (Intercountry Adoption Annual Report Travel.State.Gov)
+// In server.js
+
+// Modify the existing route for incoming adoptions
 app.get('/api/incoming-adoptions/:year', async (req, res) => {
   try {
     const { year } = req.params;
-    const result = await pool.query(
-      `SELECT c.country_name, ia.adoptions_finalized_abroad, ia.adoptions_to_be_finalized_in_us, ia.total_adoptions
-       FROM incoming_adoptions ia
-       JOIN countries c ON ia.country_id = c.country_id
-       JOIN years y ON ia.year_id = y.year_id
-       WHERE y.year = $1
-       ORDER BY ia.total_adoptions DESC`,
-      [year]
-    );
+
+    let result;
+    if (year === 'all') {
+      // Handle the 'all' case
+      result = await pool.query(
+        `SELECT c.country_name, 
+                SUM(ia.adoptions_finalized_abroad) as adoptions_finalized_abroad,
+                SUM(ia.adoptions_to_be_finalized_in_us) as adoptions_to_be_finalized_in_us,
+                SUM(ia.total_adoptions) as total_adoptions
+         FROM incoming_adoptions ia
+         JOIN countries c ON ia.country_id = c.country_id
+         GROUP BY c.country_name
+         ORDER BY SUM(ia.total_adoptions) DESC`
+      );
+    } else {
+      // Handle specific year case (existing logic)
+      result = await pool.query(
+        `SELECT c.country_name, ia.adoptions_finalized_abroad, ia.adoptions_to_be_finalized_in_us, ia.total_adoptions
+         FROM incoming_adoptions ia
+         JOIN countries c ON ia.country_id = c.country_id
+         JOIN years y ON ia.year_id = y.year_id
+         WHERE y.year = $1
+         ORDER BY ia.total_adoptions DESC`,
+        [year]
+      );
+    }
 
     if (result.rows.length === 0) {
       return res
@@ -69,12 +127,14 @@ app.get('/api/incoming-adoptions/:year', async (req, res) => {
       year: year,
       data: result.rows.map((row) => ({
         country: row.country_name,
-        adoptions_finalized_abroad: row.adoptions_finalized_abroad,
-        adoptions_to_be_finalized_in_us: row.adoptions_to_be_finalized_in_us,
-        total_adoptions: row.total_adoptions,
+        adoptions_finalized_abroad: parseInt(row.adoptions_finalized_abroad),
+        adoptions_to_be_finalized_in_us: parseInt(
+          row.adoptions_to_be_finalized_in_us
+        ),
+        total_adoptions: parseInt(row.total_adoptions),
       })),
       total_adoptions: result.rows.reduce(
-        (sum, row) => sum + row.total_adoptions,
+        (sum, row) => sum + parseInt(row.total_adoptions),
         0
       ),
     };
@@ -87,6 +147,8 @@ app.get('/api/incoming-adoptions/:year', async (req, res) => {
       .json({ error: 'An error occurred while fetching incoming adoptions' });
   }
 });
+
+// Remove the separate '/api/incoming-adoptions/all' route if you added it earlier
 
 // Get outgoing adoptions by year
 // Table 3 (Intercountry Adoption Annual Report Travel.State.Gov)

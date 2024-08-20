@@ -1,38 +1,70 @@
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import { useEffect, useState, useRef } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-const Map = ({ data, year }) => {
+const MapUpdater = ({ center, zoom }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  return null;
+};
+
+const Map = ({ data, year, selectedCountry }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
+  const [mapCenter, setMapCenter] = useState([20, 0]);
+  const [mapZoom, setMapZoom] = useState(2);
+  const geoJsonRef = useRef();
 
   useEffect(() => {
-    // Fetch GeoJSON data (you'll need to provide this)
-    fetch('../../public/countries.geojson')
+    fetch('/countries.geojson')
       .then((response) => response.json())
       .then((data) => setGeoJsonData(data));
   }, []);
 
+  useEffect(() => {
+    if (selectedCountry && geoJsonRef.current) {
+      const layer = geoJsonRef.current
+        .getLayers()
+        .find(
+          (layer) =>
+            layer.feature.properties.ADMIN.toLowerCase() ===
+            selectedCountry.toLowerCase()
+        );
+      if (layer) {
+        const bounds = layer.getBounds();
+        setMapCenter(bounds.getCenter());
+        setMapZoom(4);
+      }
+    } else {
+      setMapCenter([20, 0]);
+      setMapZoom(2);
+    }
+  }, [selectedCountry]);
+
   const getColor = (value) => {
-    // Implement color scale based on adoption numbers
-    return value > 1000
+    return value > 5000
       ? '#800026'
-      : value > 500
+      : value > 2500
       ? '#BD0026'
-      : value > 200
+      : value > 1000
       ? '#E31A1C'
-      : value > 100
+      : value > 500
       ? '#FC4E2A'
-      : value > 50
+      : value > 250
       ? '#FD8D3C'
-      : value > 20
+      : value > 100
       ? '#FEB24C'
-      : value > 10
+      : value > 50
       ? '#FED976'
       : '#FFEDA0';
   };
 
   const style = (feature) => {
-    const countryData = data.find((d) => d.country === feature.properties.name);
+    const countryData = data.find(
+      (d) => d.country === feature.properties.ADMIN
+    );
     return {
       fillColor: getColor(countryData ? countryData.total_adoptions : 0),
       weight: 2,
@@ -45,31 +77,31 @@ const Map = ({ data, year }) => {
 
   return (
     <MapContainer
-      center={[20, 0]}
-      zoom={2}
+      center={mapCenter}
+      zoom={mapZoom}
       style={{ height: '500px', width: '100%' }}
     >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {geoJsonData && (
         <GeoJSON
           data={geoJsonData}
           style={style}
+          ref={geoJsonRef}
           onEachFeature={(feature, layer) => {
             const countryData = data.find(
-              (d) => d.country === feature.properties.name
+              (d) => d.country === feature.properties.ADMIN
             );
             layer.bindPopup(`
-              <strong>${feature.properties.name}</strong><br/>
+              <strong>${feature.properties.ADMIN}</strong><br/>
               Total Adoptions: ${
                 countryData ? countryData.total_adoptions : 'N/A'
               }
+              ${year === 'all' ? ' (All Years)' : ` (${year})`}
             `);
           }}
         />
       )}
+      <MapUpdater center={mapCenter} zoom={mapZoom} />
     </MapContainer>
   );
 };

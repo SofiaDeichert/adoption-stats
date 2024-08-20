@@ -1,19 +1,54 @@
 import { useState, useEffect } from 'react';
-import { fetchIncomingAdoptions } from '../services/api';
-import Map from '../components/Map';
+import { fetchIncomingAdoptions, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
+import CountrySelection from '../components/CountrySelection';
+import Map from '../components/Map';
 import DataTable from '../components/DataTable';
-import Chart from '../components/Chart';
 
 const IncomingAdoptions = () => {
   const [data, setData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState('2023');
-  const years = ['2023', '2022', '2021', '2020'];
+  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [years, setYears] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalAdoptions, setTotalAdoptions] = useState(0);
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const yearsResult = await fetchYears();
+        setYears(['all', ...yearsResult.data]);
+
+        // Set the initial year to 'all'
+        setSelectedYear('all');
+
+        const adoptionsResult = await fetchIncomingAdoptions('all');
+        setData(adoptionsResult.data);
+        setTotalAdoptions(adoptionsResult.total_adoptions);
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetchIncomingAdoptions(selectedYear);
-      setData(result.data);
+      if (selectedYear) {
+        setIsLoading(true);
+        try {
+          const result = await fetchIncomingAdoptions(selectedYear);
+          setData(result.data);
+          setTotalAdoptions(result.total_adoptions);
+        } catch (error) {
+          console.error('Error fetching incoming adoptions:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
     };
     fetchData();
   }, [selectedYear]);
@@ -30,24 +65,37 @@ const IncomingAdoptions = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Incoming Adoptions</h2>
-      <YearFilter
-        years={years}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-      />
-      <Map data={data} year={selectedYear} />
-      <div className="mt-8">
-        {/* <DataTable data={data} columns={columns} /> */}
+      <h2 className="text-2xl font-bold mb-7 text-center">
+        Incoming Adoptions
+      </h2>
+      <div className="flex space-x-32 mb-32 justify-center">
+        <YearFilter
+          years={years}
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+        />
+        <CountrySelection
+          onCountryChange={setSelectedCountry}
+          initialCountry={selectedCountry}
+        />
       </div>
-      <div className="mt-8">
-        {/* <Chart
-          data={data.slice(0, 10)}
-          xKey="country"
-          yKey="total_adoptions"
-          title="Top 10 Countries by Total Adoptions"
-        /> */}
-      </div>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Map
+            data={data}
+            year={selectedYear}
+            selectedCountry={selectedCountry}
+          />
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">
+              Total Adoptions: {totalAdoptions}
+            </h3>
+            <DataTable data={data} columns={columns} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

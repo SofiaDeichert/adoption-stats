@@ -12,8 +12,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/incoming" element={<IncomingAdoptions />} />
-          <Route path="/outgoing" element={<OutgoingAdoptions />} />
           <Route path="/by-state" element={<AdoptionsByState />} />
+          <Route path="/outgoing" element={<OutgoingAdoptions />} />
         </Routes>
       </Layout>
     </Router>

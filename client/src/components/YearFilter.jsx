@@ -1,25 +1,74 @@
-const YearFilter = ({ years, selectedYear, onYearChange }) => {
+import { useState, useEffect } from 'react';
+import { Combobox, TextInput, useCombobox, ScrollArea } from '@mantine/core';
+import { fetchYears } from '../services/api';
+
+const YearFilter = ({ onYearChange }) => {
+  const [years, setYears] = useState([]);
+  const [value, setValue] = useState('');
+  const combobox = useCombobox();
+
+  useEffect(() => {
+    const loadYears = async () => {
+      try {
+        const response = await fetchYears();
+        setYears(['All years', ...response.data]);
+      } catch (error) {
+        console.error('Error fetching years:', error);
+      }
+    };
+    loadYears();
+  }, []);
+
+  const shouldFilterOptions = !years.some((year) => year.toString() === value);
+  const filteredYears = shouldFilterOptions
+    ? years.filter((year) =>
+        year.toString().toLowerCase().includes(value.toLowerCase().trim())
+      )
+    : years;
+
+  const options = filteredYears.map((year) => (
+    <Combobox.Option value={year.toString()} key={year}>
+      {year}
+    </Combobox.Option>
+  ));
+
   return (
-    <div className="mb-4">
-      <label
-        htmlFor="year-select"
-        className="block text-sm font-medium text-gray-700 mb-1"
+    <div>
+      <Combobox
+        onOptionSubmit={(optionValue) => {
+          setValue(optionValue);
+          onYearChange(optionValue);
+          combobox.closeDropdown();
+        }}
+        store={combobox}
       >
-        Select Year:
-      </label>
-      <select
-        id="year-select"
-        value={selectedYear}
-        onChange={(e) => onYearChange(e.target.value)}
-        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-      >
-        <option value="all">All Years</option>
-        {years.map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
+        <Combobox.Target>
+          <TextInput
+            placeholder="Default - All years"
+            value={value}
+            onChange={(event) => {
+              setValue(event.currentTarget.value);
+              combobox.openDropdown();
+              combobox.updateSelectedOptionIndex();
+            }}
+            onClick={() => combobox.openDropdown()}
+            onFocus={() => combobox.openDropdown()}
+            onBlur={() => combobox.closeDropdown()}
+          />
+        </Combobox.Target>
+
+        <Combobox.Dropdown>
+          <Combobox.Options>
+            <ScrollArea style={{ height: 100 }}>
+              {options.length === 0 ? (
+                <Combobox.Empty>No results found</Combobox.Empty>
+              ) : (
+                options
+              )}
+            </ScrollArea>
+          </Combobox.Options>
+        </Combobox.Dropdown>
+      </Combobox>
     </div>
   );
 };

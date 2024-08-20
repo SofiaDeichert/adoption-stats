@@ -7,8 +7,8 @@ import classes from './Header.module.css';
 const links = [
   { link: '/', label: 'Home' },
   { link: '/incoming', label: 'Incoming Adoptions' },
-  { link: '/outgoing', label: 'Outgoing Adoptions' },
   { link: '/by-state', label: 'Adoptions by State' },
+  { link: '/outgoing', label: 'Outgoing Adoptions' },
 ];
 
 const Header = () => {

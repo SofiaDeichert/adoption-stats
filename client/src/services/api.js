@@ -28,14 +28,18 @@ export const fetchIncomingAdoptions = async (year) => {
 
 export const fetchOutgoingAdoptions = async (year) => {
   const response = await axios.get(
-    `${API_BASE_URL}/outgoing-adoptions/${year}`
+    year === 'all'
+      ? `${API_BASE_URL}/outgoing-adoptions/all`
+      : `${API_BASE_URL}/outgoing-adoptions/${year}`
   );
   return response.data;
 };
 
 export const fetchAdoptionsByState = async (year) => {
   const response = await axios.get(
-    `${API_BASE_URL}/incoming-adoptions-by-state/${year}`
+    year === 'all'
+      ? `${API_BASE_URL}/incoming-adoptions-by-state/all`
+      : `${API_BASE_URL}/incoming-adoptions-by-state/${year}`
   );
   return response.data;
 };

@@ -1,21 +1,52 @@
 import { useState, useEffect } from 'react';
-import { fetchAdoptionsByState } from '../services/api';
+import { fetchAdoptionsByState, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
 import DataTable from '../components/DataTable';
 import Chart from '../components/Chart';
 
 const AdoptionsByState = () => {
   const [data, setData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState('2023');
-  const years = ['2023', '2022', '2021', '2020'];
+  const [selectedYear, setSelectedYear] = useState('all');
+  const [years, setYears] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalAdoptions, setTotalAdoptions] = useState(0);
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const yearsResult = await fetchYears();
+        setYears(['all', ...yearsResult.data]);
+        const adoptionsResult = await fetchAdoptionsByState('all');
+        setData(adoptionsResult.data);
+        setTotalAdoptions(adoptionsResult.total_adoptions);
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadInitialData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetchAdoptionsByState(selectedYear);
-      setData(result.data);
+      setIsLoading(true);
+      try {
+        const result = await fetchAdoptionsByState(selectedYear);
+        setData(result.data);
+        setTotalAdoptions(result.total_adoptions);
+      } catch (error) {
+        console.error('Error fetching adoptions by state:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
   }, [selectedYear]);
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+  };
 
   const columns = [
     { key: 'state', header: 'State' },
@@ -29,23 +60,38 @@ const AdoptionsByState = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Adoptions by State</h2>
-      <YearFilter
-        years={years}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-      />
-      <div className="mt-8">
-        <DataTable data={data} columns={columns} />
-      </div>
-      <div className="mt-8">
-        <Chart
-          data={data.slice(0, 10)}
-          xKey="state"
-          yKey="total_adoptions"
-          title="Top 10 States by Total Adoptions"
+      <h2 className="text-2xl font-bold mb-7 text-center">
+        Adoptions by State
+      </h2>
+      <div className="flex justify-center mb-8">
+        <YearFilter
+          years={years}
+          selectedYear={selectedYear}
+          onYearChange={handleYearChange}
         />
       </div>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">
+              Total Adoptions: {totalAdoptions}
+            </h3>
+            <DataTable data={data} columns={columns} />
+          </div>
+          <div className="mt-8">
+            <Chart
+              data={data.slice(0, 10)}
+              xKey="state"
+              yKey="total_adoptions"
+              title={`Top 10 States by Total Adoptions (${
+                selectedYear === 'all' ? 'All Years' : selectedYear
+              })`}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

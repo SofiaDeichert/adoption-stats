@@ -30,7 +30,7 @@ const CountrySelection = ({ onCountryChange }) => {
 
   const options = filteredCountries.map((country) => (
     <Combobox.Option value={country} key={country}>
-      {country || 'Reset map'}
+      {country || 'World view'}
     </Combobox.Option>
   ));
 

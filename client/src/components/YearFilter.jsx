@@ -11,7 +11,7 @@ const YearFilter = ({ onYearChange }) => {
     const loadYears = async () => {
       try {
         const response = await fetchYears();
-        setYears(['All years', ...response.data]);
+        setYears(['all', ...response.data]);
       } catch (error) {
         console.error('Error fetching years:', error);
       }
@@ -28,7 +28,7 @@ const YearFilter = ({ onYearChange }) => {
 
   const options = filteredYears.map((year) => (
     <Combobox.Option value={year.toString()} key={year}>
-      {year}
+      {year === 'all' ? 'All years' : year}
     </Combobox.Option>
   ));
 
@@ -36,7 +36,7 @@ const YearFilter = ({ onYearChange }) => {
     <div>
       <Combobox
         onOptionSubmit={(optionValue) => {
-          setValue(optionValue);
+          setValue(optionValue === 'all' ? 'All years' : optionValue);
           onYearChange(optionValue);
           combobox.closeDropdown();
         }}

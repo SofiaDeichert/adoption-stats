@@ -64,7 +64,7 @@ const StateSelection = ({ onStateChange, initialState = '' }) => {
           {filteredStates.length > 0 ? (
             filteredStates.map((state) => (
               <Combobox.Option value={state} key={state}>
-                {state || 'Reset map'}
+                {state || 'World view'}
               </Combobox.Option>
             ))
           ) : (

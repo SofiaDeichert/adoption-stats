@@ -7,7 +7,7 @@ import DataTable from '../components/DataTable';
 
 const IncomingAdoptions = () => {
   const [data, setData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedYear, setSelectedYear] = useState('all');
   const [selectedCountry, setSelectedCountry] = useState('');
   const [years, setYears] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,9 +18,6 @@ const IncomingAdoptions = () => {
       try {
         const yearsResult = await fetchYears();
         setYears(['all', ...yearsResult.data]);
-
-        // Set the initial year to 'all'
-        setSelectedYear('all');
 
         const adoptionsResult = await fetchIncomingAdoptions('all');
         setData(adoptionsResult.data);
@@ -37,21 +34,23 @@ const IncomingAdoptions = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedYear) {
-        setIsLoading(true);
-        try {
-          const result = await fetchIncomingAdoptions(selectedYear);
-          setData(result.data);
-          setTotalAdoptions(result.total_adoptions);
-        } catch (error) {
-          console.error('Error fetching incoming adoptions:', error);
-        } finally {
-          setIsLoading(false);
-        }
+      setIsLoading(true);
+      try {
+        const result = await fetchIncomingAdoptions(selectedYear);
+        setData(result.data);
+        setTotalAdoptions(result.total_adoptions);
+      } catch (error) {
+        console.error('Error fetching incoming adoptions:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
   }, [selectedYear]);
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+  };
 
   const columns = [
     { key: 'country', header: 'Country' },
@@ -72,7 +71,7 @@ const IncomingAdoptions = () => {
         <YearFilter
           years={years}
           selectedYear={selectedYear}
-          onYearChange={setSelectedYear}
+          onYearChange={handleYearChange}
         />
         <CountrySelection
           onCountryChange={setSelectedCountry}

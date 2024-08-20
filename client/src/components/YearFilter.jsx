@@ -19,13 +19,16 @@ const YearFilter = ({ onYearChange }) => {
     loadYears();
   }, []);
 
-  const shouldFilterOptions = !years.some((year) => year.toString() === value);
+  const shouldFilterOptions =
+    value.toLowerCase() !== 'all years' &&
+    !years.some((year) => year.toString() === value);
   const filteredYears = shouldFilterOptions
     ? years.filter((year) =>
         year.toString().toLowerCase().includes(value.toLowerCase().trim())
       )
     : years;
 
+  // set dropbox options
   const options = filteredYears.map((year) => (
     <Combobox.Option value={year.toString()} key={year}>
       {year === 'all' ? 'All years' : year}
@@ -36,6 +39,7 @@ const YearFilter = ({ onYearChange }) => {
     <div>
       <Combobox
         onOptionSubmit={(optionValue) => {
+          // if dropbox option is 'all', set input to 'All years'
           setValue(optionValue === 'all' ? 'All years' : optionValue);
           onYearChange(optionValue);
           combobox.closeDropdown();

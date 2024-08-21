@@ -1,21 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
-const MapUpdater = ({ center, zoom }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
-  return null;
-};
+const INITIAL_CENTER = [20, 0];
+const INITIAL_ZOOM = 2;
 
 const Map = ({ data, year, selectedCountry }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
-  const [mapCenter, setMapCenter] = useState([20, 0]);
-  const [mapZoom, setMapZoom] = useState(2);
   const geoJsonRef = useRef();
+  const mapRef = useRef();
 
   useEffect(() => {
     fetch('/countries.geojson')
@@ -24,22 +17,26 @@ const Map = ({ data, year, selectedCountry }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedCountry && geoJsonRef.current) {
-      const layer = geoJsonRef.current
-        .getLayers()
-        .find(
-          (layer) =>
-            layer.feature.properties.ADMIN.toLowerCase() ===
-            selectedCountry.toLowerCase()
-        );
-      if (layer) {
-        const bounds = layer.getBounds();
-        setMapCenter(bounds.getCenter());
-        setMapZoom(4);
+    if (geoJsonRef.current && mapRef.current) {
+      if (selectedCountry && selectedCountry !== 'World view') {
+        const layer = geoJsonRef.current
+          .getLayers()
+          .find(
+            (layer) =>
+              layer.feature.properties.ADMIN.toLowerCase() ===
+              selectedCountry.toLowerCase()
+          );
+        if (layer) {
+          const bounds = layer.getBounds();
+          mapRef.current.fitBounds(bounds);
+          mapRef.current.closePopup();
+          layer.openPopup();
+        }
+      } else {
+        // Reset to initial view when "World view" is selected
+        mapRef.current.setView(INITIAL_CENTER, INITIAL_ZOOM, { animate: true });
+        mapRef.current.closePopup();
       }
-    } else {
-      setMapCenter([20, 0]);
-      setMapZoom(2);
     }
   }, [selectedCountry]);
 
@@ -77,9 +74,10 @@ const Map = ({ data, year, selectedCountry }) => {
 
   return (
     <MapContainer
-      center={mapCenter}
-      zoom={mapZoom}
+      center={INITIAL_CENTER}
+      zoom={INITIAL_ZOOM}
       style={{ height: '500px', width: '100%' }}
+      ref={mapRef}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {geoJsonData && (
@@ -101,7 +99,6 @@ const Map = ({ data, year, selectedCountry }) => {
           }}
         />
       )}
-      <MapUpdater center={mapCenter} zoom={mapZoom} />
     </MapContainer>
   );
 };

@@ -4,6 +4,7 @@ import YearFilter from '../components/YearFilter';
 import CountrySelection from '../components/CountrySelection';
 import Map from '../components/Map';
 import DataTable from '../components/DataTable';
+import TopCountriesPieChart from '../components/TopCountriesPieChart';
 
 const IncomingAdoptions = () => {
   const [data, setData] = useState([]);
@@ -91,7 +92,14 @@ const IncomingAdoptions = () => {
             <h3 className="text-xl font-bold mb-4">
               Total Adoptions: {totalAdoptions}
             </h3>
-            <DataTable data={data} columns={columns} />
+            <div className="mt-8 flex flex-wrap justify-between">
+              <div className="w-full md:w-1/2 mb-8">
+                <TopCountriesPieChart data={data} />
+              </div>
+              <div className="w-full md:w-1/2">
+                <DataTable data={data} columns={columns} />
+              </div>
+            </div>
           </div>
         </>
       )}

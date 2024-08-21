@@ -33,7 +33,6 @@ const Map = ({ data, year, selectedCountry }) => {
           layer.openPopup();
         }
       } else {
-        // Reset to initial view when "World view" is selected
         mapRef.current.setView(INITIAL_CENTER, INITIAL_ZOOM, { animate: true });
         mapRef.current.closePopup();
       }
@@ -41,21 +40,41 @@ const Map = ({ data, year, selectedCountry }) => {
   }, [selectedCountry]);
 
   const getColor = (value) => {
-    return value > 5000
-      ? '#800026'
-      : value > 2500
-      ? '#BD0026'
-      : value > 1000
-      ? '#E31A1C'
-      : value > 500
-      ? '#FC4E2A'
-      : value > 250
-      ? '#FD8D3C'
-      : value > 100
-      ? '#FEB24C'
-      : value > 50
-      ? '#FED976'
-      : '#FFEDA0';
+    if (year === 'all') {
+      // Color scale for "all years"
+      return value > 5000
+        ? '#800026'
+        : value > 2500
+        ? '#BD0026'
+        : value > 1000
+        ? '#E31A1C'
+        : value > 500
+        ? '#FC4E2A'
+        : value > 250
+        ? '#FD8D3C'
+        : value > 100
+        ? '#FEB24C'
+        : value > 50
+        ? '#FED976'
+        : '#FFEDA0';
+    } else {
+      // Color scale for individual years
+      return value > 1000
+        ? '#800026'
+        : value > 500
+        ? '#BD0026'
+        : value > 250
+        ? '#E31A1C'
+        : value > 100
+        ? '#FC4E2A'
+        : value > 50
+        ? '#FD8D3C'
+        : value > 25
+        ? '#FEB24C'
+        : value > 10
+        ? '#FED976'
+        : '#FFEDA0';
+    }
   };
 
   const style = (feature) => {

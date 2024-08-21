@@ -3,10 +3,12 @@ import { fetchAdoptionsByState, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
 import DataTable from '../components/DataTable';
 import Chart from '../components/Chart';
+import StateMap from '../components/StateMap';
 
 const AdoptionsByState = () => {
   const [data, setData] = useState([]);
   const [selectedYear, setSelectedYear] = useState('all');
+  const [selectedState, setSelectedState] = useState(null);
   const [years, setYears] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalAdoptions, setTotalAdoptions] = useState(0);
@@ -48,6 +50,10 @@ const AdoptionsByState = () => {
     setSelectedYear(year);
   };
 
+  const handleStateSelect = (state) => {
+    setSelectedState(state);
+  };
+
   const columns = [
     { key: 'state', header: 'State' },
     { key: 'adoptions_finalized_abroad', header: 'Adoptions Finalized Abroad' },
@@ -74,6 +80,12 @@ const AdoptionsByState = () => {
         <div>Loading...</div>
       ) : (
         <>
+          <StateMap
+            data={data}
+            year={selectedYear}
+            selectedState={selectedState}
+            onStateSelect={handleStateSelect}
+          />
           <div className="mt-8">
             <h3 className="text-xl font-bold mb-4">
               Total Adoptions: {totalAdoptions}

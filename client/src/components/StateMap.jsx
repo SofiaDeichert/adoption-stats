@@ -1,30 +1,30 @@
 import { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const INITIAL_CENTER = [20, 0];
-const INITIAL_ZOOM = 2;
+const INITIAL_CENTER = [37.8, -96];
+const INITIAL_ZOOM = 4;
 
-const Map = ({ data, year, selectedCountry }) => {
+const StateMap = ({ data, year, selectedState, onStateSelect }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const geoJsonRef = useRef();
   const mapRef = useRef();
 
   useEffect(() => {
-    fetch('/countries.geojson')
+    fetch('/us-states.geojson')
       .then((response) => response.json())
       .then((data) => setGeoJsonData(data));
   }, []);
 
   useEffect(() => {
     if (geoJsonRef.current && mapRef.current) {
-      if (selectedCountry && selectedCountry !== 'World view') {
+      if (selectedState) {
         const layer = geoJsonRef.current
           .getLayers()
           .find(
             (layer) =>
-              layer.feature.properties.ADMIN.toLowerCase() ===
-              selectedCountry.toLowerCase()
+              layer.feature.properties.name.toLowerCase() ===
+              selectedState.toLowerCase()
           );
         if (layer) {
           const bounds = layer.getBounds();
@@ -37,9 +37,9 @@ const Map = ({ data, year, selectedCountry }) => {
         mapRef.current.closePopup();
       }
     }
-  }, [selectedCountry]);
+  }, [selectedState]);
 
-  const getColor = (value) => {
+  const getColor = (value, year) => {
     if (year === 'all') {
       // Color scale for "all years"
       return value > 5000
@@ -56,7 +56,11 @@ const Map = ({ data, year, selectedCountry }) => {
         ? '#FEB24C'
         : value > 50
         ? '#FED976'
-        : '#FFEDA0';
+        : value > 25
+        ? '#FFEDA0'
+        : value > 0
+        ? '#FFF7BC'
+        : '#FFFFD9';
     } else {
       // Color scale for individual years
       return value > 1000
@@ -73,16 +77,18 @@ const Map = ({ data, year, selectedCountry }) => {
         ? '#FEB24C'
         : value > 10
         ? '#FED976'
-        : '#FFEDA0';
+        : value > 5
+        ? '#FFEDA0'
+        : value > 0
+        ? '#FFF7BC'
+        : '#FFFFD9';
     }
   };
 
   const style = (feature) => {
-    const countryData = data.find(
-      (d) => d.country === feature.properties.ADMIN
-    );
+    const stateData = data.find((d) => d.state === feature.properties.name);
     return {
-      fillColor: getColor(countryData ? countryData.total_adoptions : 0),
+      fillColor: getColor(stateData ? stateData.total_adoptions : 0, year),
       weight: 2,
       opacity: 1,
       color: 'white',
@@ -105,14 +111,15 @@ const Map = ({ data, year, selectedCountry }) => {
           style={style}
           ref={geoJsonRef}
           onEachFeature={(feature, layer) => {
-            const countryData = data.find(
-              (d) => d.country === feature.properties.ADMIN
+            const stateData = data.find(
+              (d) => d.state === feature.properties.name
             );
+            layer.on({
+              click: () => onStateSelect(feature.properties.name),
+            });
             layer.bindPopup(`
-              <strong>${feature.properties.ADMIN}</strong><br/>
-              Total Adoptions: ${
-                countryData ? countryData.total_adoptions : 'N/A'
-              }
+              <strong>${feature.properties.name}</strong><br/>
+              Total Adoptions: ${stateData ? stateData.total_adoptions : 'N/A'}
               ${year === 'all' ? ' (All Years)' : ` (${year})`}
             `);
           }}
@@ -122,4 +129,4 @@ const Map = ({ data, year, selectedCountry }) => {
   );
 };
 
-export default Map;
+export default StateMap;

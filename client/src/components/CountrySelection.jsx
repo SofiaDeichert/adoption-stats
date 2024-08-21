@@ -1,4 +1,3 @@
-// CountrySelection.jsx
 import { useState, useEffect } from 'react';
 import { Combobox, TextInput, useCombobox } from '@mantine/core';
 import { fetchCountries } from '../services/api';

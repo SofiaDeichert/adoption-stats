@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchIncomingAdoptions, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
 import CountrySelection from '../components/CountrySelection';
-import Map from '../components/Map';
+import CountryMap from '../components/CountryMap';
 import DataTable from '../components/DataTable';
 import TopCountriesPieChart from '../components/TopCountriesPieChart';
 
@@ -83,7 +83,7 @@ const IncomingAdoptions = () => {
         <div>Loading...</div>
       ) : (
         <>
-          <Map
+          <CountryMap
             data={data}
             year={selectedYear}
             selectedCountry={selectedCountry}

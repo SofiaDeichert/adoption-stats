@@ -53,6 +53,27 @@ const OutgoingAdoptions = () => {
     { key: 'total_cases', header: 'Total Cases' },
   ];
 
+  // Data for receiving countries chart
+  const receivingCountriesChartData = data
+    .sort((a, b) => b.total_cases - a.total_cases)
+    .slice(0, 10);
+
+  // Data for U.S. states chart
+  const usStatesChartData = data
+    .reduce((acc, country) => {
+      Object.entries(country.us_states).forEach(([state, cases]) => {
+        const existingState = acc.find((item) => item.state === state);
+        if (existingState) {
+          existingState.total_cases += cases;
+        } else {
+          acc.push({ state, total_cases: cases });
+        }
+      });
+      return acc;
+    }, [])
+    .sort((a, b) => b.total_cases - a.total_cases)
+    .slice(0, 10);
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-7 text-center">
@@ -75,15 +96,23 @@ const OutgoingAdoptions = () => {
             </h3>
             <DataTable data={data} columns={columns} />
           </div>
-          <div className="mt-8">
-            {/* <Chart
-              data={data.slice(0, 10)}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Chart
+              data={receivingCountriesChartData}
               xKey="receiving_country"
               yKey="total_cases"
               title={`Top Receiving Countries (${
                 selectedYear === 'all' ? 'All Years' : selectedYear
               })`}
-            /> */}
+            />
+            <Chart
+              data={usStatesChartData}
+              xKey="state"
+              yKey="total_cases"
+              title={`Top U.S. States of Origin (${
+                selectedYear === 'all' ? 'All Years' : selectedYear
+              })`}
+            />
           </div>
         </>
       )}

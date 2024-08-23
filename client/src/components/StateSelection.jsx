@@ -3,7 +3,7 @@ import { Combobox, TextInput, useCombobox } from '@mantine/core';
 import { fetchStates } from '../services/api';
 import { ScrollArea } from '@mantine/core';
 
-const StateSelection = ({ onStateChange }) => {
+const StateSelection = ({ onStateChange, dropdownHeight }) => {
   const [states, setStates] = useState([]);
   const [value, setValue] = useState('');
   const combobox = useCombobox();
@@ -59,7 +59,7 @@ const StateSelection = ({ onStateChange }) => {
 
       <Combobox.Dropdown>
         <Combobox.Options>
-          <ScrollArea style={{ height: 100 }}>
+          <ScrollArea style={{ height: dropdownHeight }}>
             {options.length === 0 ? (
               <Combobox.Empty>No results found</Combobox.Empty>
             ) : (

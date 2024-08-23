@@ -77,6 +77,7 @@ const IncomingAdoptions = () => {
         <CountrySelection
           onCountryChange={setSelectedCountry}
           initialCountry={selectedCountry}
+          dropdownHeight={100}
         />
       </div>
       {isLoading ? (

@@ -96,6 +96,7 @@ const Trends = () => {
             <CountrySelection
               onCountryChange={setSelectedCountry}
               initialCountry={selectedCountry}
+              dropdownHeight={370}
             />
           </div>
           <div className="w-full md:w-3/4 mb-32">
@@ -120,6 +121,7 @@ const Trends = () => {
             <StateSelection
               onStateChange={setSelectedState}
               initialState={selectedState}
+              dropdownHeight={370}
             />
           </div>
           <div className="w-full md:w-3/4">

@@ -83,6 +83,7 @@ const AdoptionsByState = () => {
           <StateSelection
             onStateChange={handleStateChange}
             initialState={selectedState}
+            dropdownHeight={100}
           />
         </div>
       </div>

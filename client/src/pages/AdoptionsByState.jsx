@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchAdoptionsByState, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
+import StateSelection from '../components/StateSelection';
 import DataTable from '../components/DataTable';
 import Chart from '../components/Chart';
 import StateMap from '../components/StateMap';
@@ -8,7 +9,7 @@ import StateMap from '../components/StateMap';
 const AdoptionsByState = () => {
   const [data, setData] = useState([]);
   const [selectedYear, setSelectedYear] = useState('all');
-  const [selectedState, setSelectedState] = useState(null);
+  const [selectedState, setSelectedState] = useState('');
   const [years, setYears] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalAdoptions, setTotalAdoptions] = useState(0);
@@ -50,7 +51,7 @@ const AdoptionsByState = () => {
     setSelectedYear(year);
   };
 
-  const handleStateSelect = (state) => {
+  const handleStateChange = (state) => {
     setSelectedState(state);
   };
 
@@ -65,26 +66,36 @@ const AdoptionsByState = () => {
   ];
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
       <h2 className="text-2xl font-bold mb-7 text-center">
         Adoptions by State
       </h2>
-      <div className="flex justify-center mb-8">
-        <YearFilter
-          years={years}
-          selectedYear={selectedYear}
-          onYearChange={handleYearChange}
-        />
+
+      <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8 mb-32">
+        <div className="w-full sm:w-64">
+          <YearFilter
+            years={years}
+            selectedYear={selectedYear}
+            onYearChange={handleYearChange}
+          />
+        </div>
+        <div className="w-full sm:w-64">
+          <StateSelection
+            onStateChange={handleStateChange}
+            initialState={selectedState}
+          />
+        </div>
       </div>
+
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="text-center">Loading...</div>
       ) : (
         <>
           <StateMap
             data={data}
             year={selectedYear}
             selectedState={selectedState}
-            onStateSelect={handleStateSelect}
+            onStateSelect={handleStateChange}
           />
           <div className="mt-8">
             <h3 className="text-xl font-bold mb-4">

@@ -1,21 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Combobox, InputBase, useCombobox } from '@mantine/core';
+import { Combobox, TextInput, useCombobox } from '@mantine/core';
 import { fetchStates } from '../services/api';
+import { ScrollArea } from '@mantine/core';
 
-const StateSelection = ({ onStateChange, initialState = '' }) => {
+const StateSelection = ({ onStateChange }) => {
   const [states, setStates] = useState([]);
-  const [value, setValue] = useState(initialState);
-  const [search, setSearch] = useState(initialState);
-
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-  });
+  const [value, setValue] = useState('');
+  const combobox = useCombobox();
 
   useEffect(() => {
     const loadStates = async () => {
       try {
         const response = await fetchStates();
-        setStates(['', ...response.data]); // Add empty string for "Clear selection"
+        setStates(['', ...response.data]);
       } catch (error) {
         console.error('Error fetching states:', error);
       }
@@ -23,53 +20,52 @@ const StateSelection = ({ onStateChange, initialState = '' }) => {
     loadStates();
   }, []);
 
-  const filteredStates = states.filter((state) =>
-    state.toLowerCase().includes(search.toLowerCase().trim())
-  );
+  const shouldFilterOptions = !states.some((state) => state === value);
+  const filteredStates = shouldFilterOptions
+    ? states.filter((state) =>
+        state.toLowerCase().includes(value.toLowerCase().trim())
+      )
+    : states;
 
-  const handleStateSelect = (selectedState) => {
-    setValue(selectedState);
-    setSearch(selectedState);
-    onStateChange(selectedState);
-    combobox.closeDropdown();
-  };
+  const options = filteredStates.map((state) => (
+    <Combobox.Option value={state} key={state}>
+      {state || 'Country view'}
+    </Combobox.Option>
+  ));
 
   return (
     <Combobox
+      onOptionSubmit={(optionValue) => {
+        setValue(optionValue);
+        onStateChange(optionValue);
+        combobox.closeDropdown();
+      }}
       store={combobox}
-      onOptionSubmit={handleStateSelect}
-      withinPortal={false}
     >
       <Combobox.Target>
-        <InputBase
-          rightSection={<Combobox.Chevron />}
-          rightSectionPointerEvents="none"
+        <TextInput
+          placeholder="Select state"
+          value={value}
+          onChange={(event) => {
+            setValue(event.currentTarget.value);
+            combobox.openDropdown();
+            combobox.updateSelectedOptionIndex();
+          }}
           onClick={() => combobox.openDropdown()}
           onFocus={() => combobox.openDropdown()}
-          onBlur={() => {
-            combobox.closeDropdown();
-            setSearch(value || '');
-          }}
-          placeholder="Select state"
-          value={search}
-          onChange={(event) => {
-            combobox.updateSelectedOptionIndex();
-            setSearch(event.currentTarget.value);
-          }}
+          onBlur={() => combobox.closeDropdown()}
         />
       </Combobox.Target>
 
       <Combobox.Dropdown>
         <Combobox.Options>
-          {filteredStates.length > 0 ? (
-            filteredStates.map((state) => (
-              <Combobox.Option value={state} key={state}>
-                {state || 'World view'}
-              </Combobox.Option>
-            ))
-          ) : (
-            <Combobox.Empty>No results found</Combobox.Empty>
-          )}
+          <ScrollArea style={{ height: 100 }}>
+            {options.length === 0 ? (
+              <Combobox.Empty>No results found</Combobox.Empty>
+            ) : (
+              options
+            )}
+          </ScrollArea>
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

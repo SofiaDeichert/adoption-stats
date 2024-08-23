@@ -76,14 +76,14 @@ const OutgoingAdoptions = () => {
             <DataTable data={data} columns={columns} />
           </div>
           <div className="mt-8">
-            <Chart
+            {/* <Chart
               data={data.slice(0, 10)}
               xKey="receiving_country"
               yKey="total_cases"
-              title={`Top 10 Receiving Countries (${
+              title={`Top Receiving Countries (${
                 selectedYear === 'all' ? 'All Years' : selectedYear
               })`}
-            />
+            /> */}
           </div>
         </>
       )}

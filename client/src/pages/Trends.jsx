@@ -1,28 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Combobox,
-  TextInput,
-  useCombobox,
-  ScrollArea,
-  NumberInput,
-} from '@mantine/core';
+import { useState, useEffect } from 'react';
 import CustomLineChart from '../components/LineChart';
 import {
   fetchAdoptionsByState,
   fetchIncomingAdoptions,
   fetchYears,
 } from '../services/api';
+import CountrySelection from '../components/CountrySelection';
+import StateSelection from '../components/StateSelection';
 
 const Trends = () => {
   const [stateData, setStateData] = useState([]);
   const [countryData, setCountryData] = useState([]);
   const [years, setYears] = useState([]);
-  const [selectedOption, setSelectedOption] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedState, setSelectedState] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [showCountry, setShowCountry] = useState(false);
-  const [yAxisMax, setYAxisMax] = useState(null);
-  const combobox = useCombobox();
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -52,21 +44,19 @@ const Trends = () => {
     fetchInitialData();
   }, []);
 
-  const getChartData = () => {
-    const data = showCountry ? countryData : stateData;
-    const selected =
-      selectedOption || (showCountry ? 'All Countries' : 'All States');
-
+  const getChartData = (data, selected, defaultLabel) => {
     let chartData = years.map((year, index) => {
       let adoptions;
-      if (selected === 'All States' || selected === 'All Countries') {
+      if (selected === defaultLabel) {
         adoptions = data[index].data.reduce(
           (sum, item) => sum + item.total_adoptions,
           0
         );
       } else {
         const yearData = data[index].data.find((d) =>
-          showCountry ? d.country === selected : d.state === selected
+          defaultLabel === 'All Countries'
+            ? d.country === selected
+            : d.state === selected
         );
         adoptions = yearData ? yearData.total_adoptions : 0;
       }
@@ -89,82 +79,63 @@ const Trends = () => {
     return chartData;
   };
 
-  const toggleView = () => {
-    setShowCountry(!showCountry);
-    setSelectedOption('');
-    setInputValue('');
-  };
-
   if (isLoading) {
     return <div className="text-center mt-8">Loading...</div>;
   }
 
-  const options = showCountry
-    ? ['All Countries', ...new Set(countryData[0].data.map((d) => d.country))]
-    : ['All States', ...new Set(stateData[0].data.map((d) => d.state))];
-
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Adoption Trends</h1>
+      <h1 className="text-4xl font-bold mb-32 text-center">
+        Intercountry Adoption Trends
+      </h1>
 
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={toggleView}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          {showCountry ? 'Switch to U.S. States' : 'Switch to Countries'}
-        </button>
-      </div>
-
-      <div className="flex flex-col md:flex-row">
-        <div className="w-full md:w-1/4 pr-4 mb-4 md:mb-0">
-          <Combobox
-            onOptionSubmit={(value) => {
-              setSelectedOption(value);
-              setInputValue(value);
-              combobox.closeDropdown();
-            }}
-            store={combobox}
-          >
-            <Combobox.Target>
-              <TextInput
-                placeholder={`Select ${showCountry ? 'country' : 'state'}`}
-                value={inputValue}
-                onChange={(event) => {
-                  setInputValue(event.currentTarget.value);
-                  combobox.openDropdown();
-                  combobox.updateSelectedOptionIndex();
-                }}
-                onClick={() => combobox.openDropdown()}
-                onFocus={() => combobox.openDropdown()}
-                onBlur={() => combobox.closeDropdown()}
-              />
-            </Combobox.Target>
-
-            <Combobox.Dropdown>
-              <ScrollArea style={{ height: 200 }}>
-                <Combobox.Options>
-                  {options.map((option) => (
-                    <Combobox.Option value={option} key={option}>
-                      {option}
-                    </Combobox.Option>
-                  ))}
-                </Combobox.Options>
-              </ScrollArea>
-            </Combobox.Dropdown>
-          </Combobox>
+      <div className="space-y-12">
+        {/* Country Section */}
+        <div className="flex flex-col md:flex-row md:space-x-8">
+          <div className="w-full md:w-1/4 mb-4 md:mb-0">
+            <CountrySelection
+              onCountryChange={setSelectedCountry}
+              initialCountry={selectedCountry}
+            />
+          </div>
+          <div className="w-full md:w-3/4 mb-32">
+            <CustomLineChart
+              data={getChartData(
+                countryData,
+                selectedCountry || 'All Countries',
+                'All Countries'
+              )}
+              xKey="year"
+              yKey="adoptions"
+              title={`Outgoing Adoptions from ${
+                selectedCountry || 'All Countries'
+              } by Year`}
+            />
+          </div>
         </div>
 
-        <div className="w-full md:w-3/4">
-          <CustomLineChart
-            data={getChartData()}
-            xKey="year"
-            yKey="adoptions"
-            title={`Adoptions ${showCountry ? 'from' : 'in'} ${
-              selectedOption || (showCountry ? 'All Countries' : 'All States')
-            } by Year`}
-            yAxisMax={yAxisMax}
-          />
+        {/* State Section */}
+        <div className="flex flex-col md:flex-row md:space-x-8">
+          <div className="w-full md:w-1/4 mb-4 md:mb-0">
+            <StateSelection
+              onStateChange={setSelectedState}
+              initialState={selectedState}
+            />
+          </div>
+          <div className="w-full md:w-3/4">
+            <CustomLineChart
+              data={getChartData(
+                stateData,
+                selectedState || 'All States',
+                'All States'
+              )}
+              xKey="year"
+              yKey="adoptions"
+              title={`Incoming Adoptions in ${
+                selectedState || 'All States'
+              } by Year`}
+            />
+          </div>
         </div>
       </div>
     </div>

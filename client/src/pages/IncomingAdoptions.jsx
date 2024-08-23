@@ -65,7 +65,7 @@ const IncomingAdoptions = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-12 text-center">
+      <h2 className="text-4xl font-bold mb-12 text-center">
         Incoming Adoptions
       </h2>
       <div className="flex space-x-32 mb-32 justify-center">

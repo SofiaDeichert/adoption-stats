@@ -76,7 +76,7 @@ const OutgoingAdoptions = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-bold mb-12 text-center">
+      <h2 className="text-4xl font-bold mb-12 text-center">
         Outgoing Adoptions
       </h2>
       <div className="flex justify-center mb-32">

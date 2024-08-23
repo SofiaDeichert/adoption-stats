@@ -67,7 +67,7 @@ const AdoptionsByState = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-bold mb-12 text-center">
+      <h2 className="text-4xl font-bold mb-12 text-center">
         Adoptions by State
       </h2>
 

@@ -5,6 +5,7 @@ import StateSelection from '../components/StateSelection';
 import DataTable from '../components/DataTable';
 import Chart from '../components/Chart';
 import StateMap from '../components/StateMap';
+import TopReceivingStatesPieChart from '../components/TopReceivingStatesPieChart';
 
 const AdoptionsByState = () => {
   const [data, setData] = useState([]);
@@ -101,17 +102,23 @@ const AdoptionsByState = () => {
             <h3 className="text-xl font-bold mb-4">
               Total Adoptions: {totalAdoptions}
             </h3>
-            <DataTable data={data} columns={columns} />
-          </div>
-          <div className="mt-8">
-            <Chart
+
+            <div className="mt-8 flex flex-wrap justify-between">
+              <div className="w-full md:w-1/2 mb-8">
+                <TopReceivingStatesPieChart data={data} />
+              </div>
+              <div className="w-full md:w-1/2">
+                <DataTable data={data} columns={columns} />
+              </div>
+            </div>
+            {/* <Chart
               data={data.slice(0, 10)}
               xKey="state"
               yKey="total_adoptions"
               title={`Top 10 States by Total Adoptions (${
                 selectedYear === 'all' ? 'All Years' : selectedYear
               })`}
-            />
+            /> */}
           </div>
         </>
       )}

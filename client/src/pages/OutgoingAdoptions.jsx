@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchOutgoingAdoptions, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
-import DataTable from '../components/DataTable';
+import OutgoingDataTable from '../components/OutgoingDataTable';
 import Chart from '../components/Chart';
 
 const OutgoingAdoptions = () => {
@@ -75,11 +75,11 @@ const OutgoingAdoptions = () => {
     .slice(0, 10);
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
       <h2 className="text-2xl font-bold mb-7 text-center">
         Outgoing Adoptions
       </h2>
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-32">
         <YearFilter
           years={years}
           selectedYear={selectedYear}
@@ -94,7 +94,7 @@ const OutgoingAdoptions = () => {
             <h3 className="text-xl font-bold mb-4">
               Total Cases: {totalCases}
             </h3>
-            <DataTable data={data} columns={columns} />
+            <OutgoingDataTable data={data} columns={columns} />
           </div>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <Chart

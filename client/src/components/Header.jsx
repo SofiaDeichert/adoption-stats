@@ -8,6 +8,7 @@ const links = [
   { link: '/incoming', label: 'Incoming Adoptions' },
   { link: '/by-state', label: 'Adoptions by State' },
   { link: '/outgoing', label: 'Outgoing Adoptions' },
+  { link: '/trends', label: 'Trends' },
 ];
 
 const Header = () => {
@@ -17,18 +18,18 @@ const Header = () => {
     <Link
       key={link.label}
       to={link.link}
-      className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
+      className="text-white hover:bg-blue-700 px-3 py-4 rounded-md text-lg font-medium"
     >
       {link.label}
     </Link>
   ));
 
   return (
-    <header className="bg-blue-600 py-4">
-      <Container size="xl">
+    <header className="bg-blue-600 py-4 px-12">
+      <Container size="2xl">
         <div className="flex justify-between items-center">
-          <h1 className="text-white text-xl font-bold">
-            Adoption Statistics Dashboard
+          <h1 className="text-white text-2xl font-bold">
+            Intercountry Adoption Statistics Dashboard
           </h1>
           <nav className="hidden md:flex space-x-4">{items}</nav>
           <Burger

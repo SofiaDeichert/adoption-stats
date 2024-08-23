@@ -14,7 +14,7 @@ const Home = () => {
   return (
     <Container size="xl">
       <Title order={1} align="center" mt="xl" mb="md">
-        Welcome to the Adoption Statistics Dashboard
+        Intercountry Adoption Statistics Dashboard
       </Title>
       <Text align="center" size="lg" mb="xl" pt={15}>
         This dashboard provides comprehensive statistics on United States

@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import IncomingAdoptions from './pages/IncomingAdoptions';
 import OutgoingAdoptions from './pages/OutgoingAdoptions';
 import AdoptionsByState from './pages/AdoptionsByState';
+import Trends from './pages/Trends';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/incoming" element={<IncomingAdoptions />} />
           <Route path="/by-state" element={<AdoptionsByState />} />
           <Route path="/outgoing" element={<OutgoingAdoptions />} />
+          <Route path="/trends" element={<Trends />} />
         </Routes>
       </Layout>
     </Router>

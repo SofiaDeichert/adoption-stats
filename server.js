@@ -149,7 +149,6 @@ app.get('/api/incoming-adoptions/:year', async (req, res) => {
 // Get outgoing adoptions by year
 // Table 3 (Intercountry Adoption Annual Report Travel.State.Gov)
 // Get outgoing adoptions by year
-// Table 3 (Intercountry Adoption Annual Report Travel.State.Gov)
 app.get('/api/outgoing-adoptions/:year', async (req, res) => {
   try {
     const { year } = req.params;

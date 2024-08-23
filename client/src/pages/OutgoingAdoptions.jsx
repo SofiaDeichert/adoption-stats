@@ -76,7 +76,7 @@ const OutgoingAdoptions = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-2xl font-bold mb-7 text-center">
+      <h2 className="text-3xl font-bold mb-12 text-center">
         Outgoing Adoptions
       </h2>
       <div className="flex justify-center mb-32">
@@ -96,7 +96,7 @@ const OutgoingAdoptions = () => {
             </h3>
             <OutgoingDataTable data={data} columns={columns} />
           </div>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="mt-32 grid grid-cols-1 md:grid-cols-2 gap-8">
             <Chart
               data={receivingCountriesChartData}
               xKey="receiving_country"

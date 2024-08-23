@@ -3,7 +3,6 @@ import { fetchAdoptionsByState, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
 import StateSelection from '../components/StateSelection';
 import DataTable from '../components/DataTable';
-import Chart from '../components/Chart';
 import StateMap from '../components/StateMap';
 import TopReceivingStatesPieChart from '../components/TopReceivingStatesPieChart';
 
@@ -68,7 +67,7 @@ const AdoptionsByState = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-2xl font-bold mb-7 text-center">
+      <h2 className="text-3xl font-bold mb-12 text-center">
         Adoptions by State
       </h2>
 
@@ -111,14 +110,6 @@ const AdoptionsByState = () => {
                 <DataTable data={data} columns={columns} />
               </div>
             </div>
-            {/* <Chart
-              data={data.slice(0, 10)}
-              xKey="state"
-              yKey="total_adoptions"
-              title={`Top 10 States by Total Adoptions (${
-                selectedYear === 'all' ? 'All Years' : selectedYear
-              })`}
-            /> */}
           </div>
         </>
       )}

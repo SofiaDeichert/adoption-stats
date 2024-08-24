@@ -124,14 +124,14 @@ const Trends = () => {
 
           {/* State Section */}
           <div className="flex flex-col md:flex-row md:space-x-8">
-            <div className="w-full md:w-1/4 mb-4 md:mb-0">
+            <div className="w-full md:w-1/4 mb-4 md:mb-12">
               <StateSelection
                 onStateChange={setSelectedState}
                 initialState={selectedState}
                 dropdownHeight={370}
               />
             </div>
-            <div className="w-full md:w-3/4">
+            <div className="w-full md:w-3/4 mt-12">
               <CustomLineChart
                 data={getChartData(
                   stateData,

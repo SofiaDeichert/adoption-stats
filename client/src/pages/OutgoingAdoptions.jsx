@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchOutgoingAdoptions, fetchYears } from '../services/api';
 import YearFilter from '../components/YearFilter';
 import OutgoingDataTable from '../components/OutgoingDataTable';
-import Chart from '../components/Chart';
+import CustomBarChart from '../components/CustomBarChart';
 
 const OutgoingAdoptions = () => {
   const [data, setData] = useState([]);
@@ -75,11 +75,11 @@ const OutgoingAdoptions = () => {
     .slice(0, 10);
 
   return (
-    <div className="container mx-auto px-4">
-      <h2 className="text-4xl font-bold mb-12 text-center">
+    <div className="container mx-auto px-4 mt-4">
+      <h2 className="text-4xl font-bold mb-7 text-center">
         Outgoing Adoptions
       </h2>
-      <div className="flex justify-center mb-32">
+      <div className="flex justify-center mb-36">
         <YearFilter
           years={years}
           selectedYear={selectedYear}
@@ -91,28 +91,35 @@ const OutgoingAdoptions = () => {
       ) : (
         <>
           <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">
+            <h3 className="text-2xl font-bold mb-4">
               Total Cases: {totalCases}
             </h3>
             <OutgoingDataTable data={data} columns={columns} />
           </div>
-          <div className="mt-32 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Chart
-              data={receivingCountriesChartData}
-              xKey="receiving_country"
-              yKey="total_cases"
-              title={`Top Receiving Countries (${
-                selectedYear === 'all' ? 'All Years' : selectedYear
-              })`}
-            />
-            <Chart
-              data={usStatesChartData}
-              xKey="state"
-              yKey="total_cases"
-              title={`Top U.S. States of Origin (${
-                selectedYear === 'all' ? 'All Years' : selectedYear
-              })`}
-            />
+          <div className="mt-8 space-y-12">
+            {' '}
+            <div className="w-full mt-16 mb-16">
+              {' '}
+              <CustomBarChart
+                data={receivingCountriesChartData}
+                xKey="receiving_country"
+                yKey="total_cases"
+                title={`Top Receiving Countries (${
+                  selectedYear === 'all' ? 'All Years' : selectedYear
+                })`}
+              />
+            </div>
+            <div className="w-full">
+              {' '}
+              <CustomBarChart
+                data={usStatesChartData}
+                xKey="state"
+                yKey="total_cases"
+                title={`Top U.S. States of Origin (${
+                  selectedYear === 'all' ? 'All Years' : selectedYear
+                })`}
+              />
+            </div>
           </div>
         </>
       )}

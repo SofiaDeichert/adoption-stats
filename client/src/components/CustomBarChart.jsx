@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const Chart = ({ data, xKey, yKey, title }) => {
+const CustomBarChart = ({ data, xKey, yKey, title }) => {
   return (
     <div className="h-96">
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
@@ -27,4 +27,4 @@ const Chart = ({ data, xKey, yKey, title }) => {
   );
 };
 
-export default Chart;
+export default CustomBarChart;

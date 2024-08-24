@@ -29,7 +29,7 @@ const TopCountriesPieChart = ({ data }) => {
 
   return (
     <div className="h-96 w-full">
-      <h3 className="text-lg font-semibold mb-4 text-center">
+      <h3 className="text-xl font-semibold mb-4 text-center">
         Top 5 Countries of Origin
       </h3>
       <ResponsiveContainer width="100%" height="100%">

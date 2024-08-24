@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { FaGlobeAsia, FaMapMarkedAlt } from 'react-icons/fa';
 import { IoArrowRedoOutline } from 'react-icons/io5';
 import { MdOutlineQueryStats } from 'react-icons/md';

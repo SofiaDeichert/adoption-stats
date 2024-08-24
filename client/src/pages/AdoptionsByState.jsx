@@ -67,7 +67,7 @@ const AdoptionsByState = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-4xl font-bold mb-12 text-center">
+      <h2 className="text-4xl font-bold mb-12 text-center mt-4">
         Adoptions by State
       </h2>
 
@@ -99,7 +99,7 @@ const AdoptionsByState = () => {
             onStateSelect={handleStateChange}
           />
           <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">
+            <h3 className="text-2xl font-bold mb-4">
               Total Adoptions: {totalAdoptions}
             </h3>
 

@@ -80,63 +80,71 @@ const Trends = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center mt-8">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-b  pt-16 flex items-center justify-center">
+        <div className="text-center text-2xl font-semibold text-gray-600">
+          Loading...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-4">
-      <h1 className="text-4xl font-bold mb-32 mt-4 text-center">
-        Intercountry Adoption Trends
-      </h1>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-16">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12 text-blue-800 leading-tight">
+          Intercountry Adoption Trends
+        </h1>
 
-      <div className="space-y-12">
-        {/* Country Section */}
-        <div className="flex flex-col md:flex-row md:space-x-8">
-          <div className="w-full md:w-1/4 mb-4 md:mb-0">
-            <CountrySelection
-              onCountryChange={setSelectedCountry}
-              initialCountry={selectedCountry}
-              dropdownHeight={370}
-            />
+        <div className="space-y-16">
+          {/* Country Section */}
+          <div className="flex flex-col md:flex-row md:space-x-8">
+            <div className="w-full md:w-1/4 mb-4 md:mb-0">
+              <CountrySelection
+                onCountryChange={setSelectedCountry}
+                initialCountry={selectedCountry}
+                dropdownHeight={370}
+              />
+            </div>
+            <div className="w-full md:w-3/4">
+              <CustomLineChart
+                data={getChartData(
+                  countryData,
+                  selectedCountry || 'All Countries',
+                  'All Countries'
+                )}
+                xKey="year"
+                yKey="adoptions"
+                title={`Outgoing Adoptions from ${
+                  selectedCountry || 'All Countries'
+                } by Year`}
+              />
+            </div>
           </div>
-          <div className="w-full md:w-3/4 mb-32">
-            <CustomLineChart
-              data={getChartData(
-                countryData,
-                selectedCountry || 'All Countries',
-                'All Countries'
-              )}
-              xKey="year"
-              yKey="adoptions"
-              title={`Outgoing Adoptions from ${
-                selectedCountry || 'All Countries'
-              } by Year`}
-            />
-          </div>
-        </div>
 
-        {/* State Section */}
-        <div className="flex flex-col md:flex-row md:space-x-8">
-          <div className="w-full md:w-1/4 mb-4 md:mb-0">
-            <StateSelection
-              onStateChange={setSelectedState}
-              initialState={selectedState}
-              dropdownHeight={370}
-            />
-          </div>
-          <div className="w-full md:w-3/4">
-            <CustomLineChart
-              data={getChartData(
-                stateData,
-                selectedState || 'All States',
-                'All States'
-              )}
-              xKey="year"
-              yKey="adoptions"
-              title={`Incoming Adoptions in ${
-                selectedState || 'All States'
-              } by Year`}
-            />
+          {/* State Section */}
+          <div className="flex flex-col md:flex-row md:space-x-8">
+            <div className="w-full md:w-1/4 mb-4 md:mb-0">
+              <StateSelection
+                onStateChange={setSelectedState}
+                initialState={selectedState}
+                dropdownHeight={370}
+              />
+            </div>
+            <div className="w-full md:w-3/4">
+              <CustomLineChart
+                data={getChartData(
+                  stateData,
+                  selectedState || 'All States',
+                  'All States'
+                )}
+                xKey="year"
+                yKey="adoptions"
+                title={`Incoming Adoptions in ${
+                  selectedState || 'All States'
+                } by Year`}
+              />
+            </div>
           </div>
         </div>
       </div>

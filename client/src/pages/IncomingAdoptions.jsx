@@ -64,46 +64,56 @@ const IncomingAdoptions = () => {
   ];
 
   return (
-    <div>
-      <h2 className="text-4xl font-bold mb-12 mt-4 text-center">
-        Incoming Adoptions
-      </h2>
-      <div className="flex space-x-32 mb-32 justify-center">
-        <YearFilter
-          years={years}
-          selectedYear={selectedYear}
-          onYearChange={handleYearChange}
-        />
-        <CountrySelection
-          onCountryChange={setSelectedCountry}
-          initialCountry={selectedCountry}
-          dropdownHeight={100}
-        />
-      </div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <CountryMap
-            data={data}
-            year={selectedYear}
-            selectedCountry={selectedCountry}
-          />
-          <div className="mt-8">
-            <h3 className="text-2xl font-bold mb-4">
-              Total Adoptions: {totalAdoptions}
-            </h3>
-            <div className="mt-8 flex flex-wrap justify-between">
-              <div className="w-full md:w-1/2 mb-8">
-                <TopCountriesPieChart data={data} />
-              </div>
-              <div className="w-full md:w-1/2">
-                <DataTable data={data} columns={columns} />
+    <div className="min-h-screen bg-gradient-to-b  pt-16">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12 text-blue-800 leading-tight">
+          Incoming Adoptions
+        </h1>
+        <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 mb-12">
+          <div className="w-full md:w-64">
+            <YearFilter
+              years={years}
+              selectedYear={selectedYear}
+              onYearChange={handleYearChange}
+            />
+          </div>
+          <div className="w-full md:w-64">
+            <CountrySelection
+              onCountryChange={setSelectedCountry}
+              initialCountry={selectedCountry}
+              dropdownHeight={100}
+            />
+          </div>
+        </div>
+        {isLoading ? (
+          <div className="text-center text-2xl font-semibold text-gray-600">
+            Loading...
+          </div>
+        ) : (
+          <>
+            <div className="mb-12 relative z-10">
+              <CountryMap
+                data={data}
+                year={selectedYear}
+                selectedCountry={selectedCountry}
+              />
+            </div>
+            <div className="mt-8">
+              <h3 className="text-center text-3xl font-bold mb-12 text-blue-800">
+                Total Adoptions: {totalAdoptions}
+              </h3>
+              <div className="mt-8 flex flex-wrap justify-between">
+                <div className="w-full lg:w-1/2 mb-8 lg:mb-0">
+                  <TopCountriesPieChart data={data} />
+                </div>
+                <div className="w-full lg:w-1/2">
+                  <DataTable data={data} columns={columns} />
+                </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

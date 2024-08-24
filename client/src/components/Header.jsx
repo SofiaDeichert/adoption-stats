@@ -17,7 +17,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-blue-600 py-4 px-6 lg:px-12">
+    <header className="bg-blue-600 py-4 px-6 lg:px-12 fixed top-0 left-0 right-0 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <h1 className="text-white text-xl lg:text-2xl font-bold">
           Intercountry Adoption Statistics Dashboard
@@ -29,7 +29,7 @@ const Header = () => {
             <Link
               key={link.label}
               to={link.to}
-              className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
+              className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium 2xl:text-lg"
             >
               {link.label}
             </Link>
@@ -59,7 +59,7 @@ const Header = () => {
 
       {/* Mobile menu */}
       <div
-        className={`fixed top-0 right-0 h-25%w-64 bg-blue-600 z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-64 bg-blue-600 z-50 transform transition-transform duration-300 ease-in-out ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

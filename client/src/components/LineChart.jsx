@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   LineChart,
   Line,
@@ -43,7 +42,9 @@ const CustomLineChart = ({ data, xKey, yKey, title, yAxisMax }) => {
 
   return (
     <div className="w-full h-96">
-      <h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
+      <h3 className="text-blue-800 text-lg font-semibold mb-4 text-center">
+        {title}
+      </h3>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

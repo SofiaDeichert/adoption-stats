@@ -12,7 +12,7 @@ import {
 const CustomBarChart = ({ data, xKey, yKey, title }) => {
   return (
     <div className="h-96">
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <h3 className="text-blue-800 text-lg font-semibold mb-2">{title}</h3>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

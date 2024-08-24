@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const INITIAL_CENTER = [37.8, -96];
-const INITIAL_ZOOM = 4;
+const INITIAL_CENTER = [39, -96];
+const INITIAL_ZOOM = 4.5;
 
 const StateMap = ({ data, year, selectedState, onStateSelect }) => {
   const [geoJsonData, setGeoJsonData] = useState(null);
@@ -98,34 +98,38 @@ const StateMap = ({ data, year, selectedState, onStateSelect }) => {
   };
 
   return (
-    <MapContainer
-      center={INITIAL_CENTER}
-      zoom={INITIAL_ZOOM}
-      style={{ height: '500px', width: '100%' }}
-      ref={mapRef}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {geoJsonData && (
-        <GeoJSON
-          data={geoJsonData}
-          style={style}
-          ref={geoJsonRef}
-          onEachFeature={(feature, layer) => {
-            const stateData = data.find(
-              (d) => d.state === feature.properties.name
-            );
-            layer.on({
-              click: () => onStateSelect(feature.properties.name),
-            });
-            layer.bindPopup(`
-              <strong>${feature.properties.name}</strong><br/>
-              Total Adoptions: ${stateData ? stateData.total_adoptions : 'N/A'}
-              ${year === 'all' ? ' (All Years)' : ` (${year})`}
-            `);
-          }}
-        />
-      )}
-    </MapContainer>
+    <div className="w-full aspect-[4/3] max-w-7xl mx-auto">
+      <MapContainer
+        center={INITIAL_CENTER}
+        zoom={INITIAL_ZOOM}
+        className="w-full h-full"
+        ref={mapRef}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {geoJsonData && (
+          <GeoJSON
+            data={geoJsonData}
+            style={style}
+            ref={geoJsonRef}
+            onEachFeature={(feature, layer) => {
+              const stateData = data.find(
+                (d) => d.state === feature.properties.name
+              );
+              layer.on({
+                click: () => onStateSelect(feature.properties.name),
+              });
+              layer.bindPopup(`
+                <strong>${feature.properties.name}</strong><br/>
+                Total Adoptions: ${
+                  stateData ? stateData.total_adoptions : 'N/A'
+                }
+                ${year === 'all' ? ' (All Years)' : ` (${year})`}
+              `);
+            }}
+          />
+        )}
+      </MapContainer>
+    </div>
   );
 };
 

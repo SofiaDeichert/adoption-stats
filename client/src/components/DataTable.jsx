@@ -3,20 +3,20 @@ const DataTable = ({ data, columns }) => {
     <div className="w-full">
       <div className="max-h-[400px] overflow-y-auto">
         <table className="w-full table-auto">
-          <thead className="bg-gray-50 sticky top-0">
+          <thead className="bg-blue-50 sticky top-0">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
-                  className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-3 py-2 text-left text-xs font-medium text-blue-800 uppercase tracking-wider"
                 >
                   {column.header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-blue-100">
             {data.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {columns.map((column) => (

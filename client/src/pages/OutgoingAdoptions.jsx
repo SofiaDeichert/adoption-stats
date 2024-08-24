@@ -75,54 +75,57 @@ const OutgoingAdoptions = () => {
     .slice(0, 10);
 
   return (
-    <div className="container mx-auto px-4 mt-4">
-      <h2 className="text-4xl font-bold mb-7 text-center">
-        Outgoing Adoptions
-      </h2>
-      <div className="flex justify-center mb-36">
-        <YearFilter
-          years={years}
-          selectedYear={selectedYear}
-          onYearChange={handleYearChange}
-        />
+    <div className="min-h-screen bg-gradient-to-b  pt-16">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12 text-blue-800 leading-tight">
+          Outgoing Adoptions
+        </h1>
+        <div className="flex justify-center mb-12">
+          <div className="w-full md:w-64">
+            <YearFilter
+              years={years}
+              selectedYear={selectedYear}
+              onYearChange={handleYearChange}
+            />
+          </div>
+        </div>
+        {isLoading ? (
+          <div className="text-center text-2xl font-semibold text-blue-600">
+            Loading...
+          </div>
+        ) : (
+          <>
+            <div className="mt-8">
+              <h3 className="text-center text-3xl font-bold mb-12 text-blue-800">
+                Total Cases: {totalCases}
+              </h3>
+              <OutgoingDataTable data={data} columns={columns} />
+            </div>
+            <div className="mt-16 space-y-16">
+              <div className="w-full">
+                <CustomBarChart
+                  data={receivingCountriesChartData}
+                  xKey="receiving_country"
+                  yKey="total_cases"
+                  title={`Top Receiving Countries (${
+                    selectedYear === 'all' ? 'All Years' : selectedYear
+                  })`}
+                />
+              </div>
+              <div className="w-full">
+                <CustomBarChart
+                  data={usStatesChartData}
+                  xKey="state"
+                  yKey="total_cases"
+                  title={`Top U.S. States of Origin (${
+                    selectedYear === 'all' ? 'All Years' : selectedYear
+                  })`}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <div className="mt-8">
-            <h3 className="text-2xl font-bold mb-4">
-              Total Cases: {totalCases}
-            </h3>
-            <OutgoingDataTable data={data} columns={columns} />
-          </div>
-          <div className="mt-8 space-y-12">
-            {' '}
-            <div className="w-full mt-16 mb-16">
-              {' '}
-              <CustomBarChart
-                data={receivingCountriesChartData}
-                xKey="receiving_country"
-                yKey="total_cases"
-                title={`Top Receiving Countries (${
-                  selectedYear === 'all' ? 'All Years' : selectedYear
-                })`}
-              />
-            </div>
-            <div className="w-full">
-              {' '}
-              <CustomBarChart
-                data={usStatesChartData}
-                xKey="state"
-                yKey="total_cases"
-                title={`Top U.S. States of Origin (${
-                  selectedYear === 'all' ? 'All Years' : selectedYear
-                })`}
-              />
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 };

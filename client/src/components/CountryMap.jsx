@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const INITIAL_CENTER = [20, 0];
@@ -98,35 +98,36 @@ const CountryMap = ({ data, year, selectedCountry }) => {
       fillOpacity: 0.7,
     };
   };
-
   return (
-    <MapContainer
-      center={INITIAL_CENTER}
-      zoom={INITIAL_ZOOM}
-      style={{ height: '500px', width: '100%' }}
-      ref={mapRef}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {geoJsonData && (
-        <GeoJSON
-          data={geoJsonData}
-          style={style}
-          ref={geoJsonRef}
-          onEachFeature={(feature, layer) => {
-            const countryData = data.find(
-              (d) => d.country === feature.properties.ADMIN
-            );
-            layer.bindPopup(`
-              <strong>${feature.properties.ADMIN}</strong><br/>
-              Total Adoptions: ${
-                countryData ? countryData.total_adoptions : 'N/A'
-              }
-              ${year === 'all' ? ' (All Years)' : ` (${year})`}
-            `);
-          }}
-        />
-      )}
-    </MapContainer>
+    <div className="mb-12 w-full aspect-[16/9] max-w-7xl mx-auto">
+      <MapContainer
+        center={INITIAL_CENTER}
+        zoom={INITIAL_ZOOM}
+        className="w-full h-full"
+        ref={mapRef}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {geoJsonData && (
+          <GeoJSON
+            data={geoJsonData}
+            style={style}
+            ref={geoJsonRef}
+            onEachFeature={(feature, layer) => {
+              const countryData = data.find(
+                (d) => d.country === feature.properties.ADMIN
+              );
+              layer.bindPopup(`
+                <strong>${feature.properties.ADMIN}</strong><br/>
+                Total Adoptions: ${
+                  countryData ? countryData.total_adoptions : 'N/A'
+                }
+                ${year === 'all' ? ' (All Years)' : ` (${year})`}
+              `);
+            }}
+          />
+        )}
+      </MapContainer>
+    </div>
   );
 };
 

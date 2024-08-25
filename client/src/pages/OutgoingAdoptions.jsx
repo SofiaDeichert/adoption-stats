@@ -99,10 +99,13 @@ const OutgoingAdoptions = () => {
               <h3 className="text-center text-3xl font-bold mb-12 text-blue-800">
                 Total Cases: {totalCases}
               </h3>
-              <OutgoingDataTable data={data} columns={columns} />
+              <div className="xl:px-16 2xl:px-24 3xl:px-36 4xl:px-48 5xl:px-84">
+                <OutgoingDataTable data={data} columns={columns} />
+              </div>
             </div>
             <div className="mt-16 space-y-16">
-              <div className="w-full">
+              <div className="w-full xl:px-16 2xl:px-24 3xl:px-36 4xl:px-48 5xl:px-84">
+                {' '}
                 <CustomBarChart
                   data={receivingCountriesChartData}
                   xKey="receiving_country"
@@ -112,7 +115,8 @@ const OutgoingAdoptions = () => {
                   })`}
                 />
               </div>
-              <div className="w-full">
+              <div className="w-full xl:px-16 2xl:px-24 3xl:px-36 4xl:px-48 5xl:px-84">
+                {' '}
                 <CustomBarChart
                   data={usStatesChartData}
                   xKey="state"

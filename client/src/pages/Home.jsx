@@ -14,8 +14,8 @@ const Home = () => {
         </h1>
         <p className="text-xl md:text-2xl text-center mb-32 max-w-3xl mx-auto text-gray-600 leading-relaxed">
           This dashboard provides comprehensive statistics on United States
-          intercountry adoptions. Explore the data through various
-          visualizations and tables.
+          intercountry adoptions from 2008 to 2023. Explore the data through
+          various visualizations and tables.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

@@ -1,7 +1,6 @@
 import { FaGlobeAsia, FaMapMarkedAlt } from 'react-icons/fa';
 import { IoArrowRedoOutline } from 'react-icons/io5';
 import { MdOutlineQueryStats } from 'react-icons/md';
-import { Link } from 'react-router-dom';
 import Card from '../components/Card';
 
 const Home = () => {

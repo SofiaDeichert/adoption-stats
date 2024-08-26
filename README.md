@@ -94,6 +94,7 @@ An interactive map of the United States visualizing adoption data by state:
 #### Pie Chart
 
 ![By State Pie Chart](./assets/screenshots/by-state-pie-chart.png)
+
 A pie chart illustrating the distribution of adoptions across US states:
 
 - Each slice represents a state's proportion of total US adoptions
